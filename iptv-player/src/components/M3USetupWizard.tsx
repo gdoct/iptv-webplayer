@@ -1,7 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { Wizard, type WizardStep, TextInput } from '@ipts/ipts-styles';
 import { M3UService } from '../services/m3uService';
-import { M3UStorageService } from '../services/m3uStorageService';
 
 export interface M3USetupWizardProps {
   isOpen: boolean;

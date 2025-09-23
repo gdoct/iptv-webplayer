@@ -1,8 +1,5 @@
 import React, { useState, useRef } from "react";
 import { createPortal } from "react-dom";
-import { Button } from "../Button";
-import { TextInput } from "../TextInput";
-import { Label } from "../Label";
 import type { Playlist } from "../PlaylistSelector";
 
 export type PlaylistManagerModalProps = React.HTMLAttributes<HTMLDivElement> & {
@@ -261,8 +258,8 @@ const PlaylistManagerModal = React.forwardRef<HTMLDivElement, PlaylistManagerMod
                                 justifyContent: 'center',
                                 transition: 'background-color 0.2s'
                             }}
-                            onMouseOver={(e) => e.target.style.backgroundColor = 'rgba(255, 255, 255, 0.2)'}
-                            onMouseOut={(e) => e.target.style.backgroundColor = 'rgba(255, 255, 255, 0.1)'}
+                            onMouseOver={(e) => (e.target as HTMLButtonElement).style.backgroundColor = 'rgba(255, 255, 255, 0.2)'}
+                            onMouseOut={(e) => (e.target as HTMLButtonElement).style.backgroundColor = 'rgba(255, 255, 255, 0.1)'}
                         >
                             ×
                         </button>
@@ -409,12 +406,12 @@ const PlaylistManagerModal = React.forwardRef<HTMLDivElement, PlaylistManagerMod
                                     gap: '8px'
                                 }}
                                 onMouseOver={(e) => {
-                                    e.target.style.background = 'rgba(59, 130, 246, 0.3)';
-                                    e.target.style.borderColor = 'rgba(59, 130, 246, 0.4)';
+                                    (e.target as HTMLButtonElement).style.background = 'rgba(59, 130, 246, 0.3)';
+                                    (e.target as HTMLButtonElement).style.borderColor = 'rgba(59, 130, 246, 0.4)';
                                 }}
                                 onMouseOut={(e) => {
-                                    e.target.style.background = 'rgba(59, 130, 246, 0.2)';
-                                    e.target.style.borderColor = 'rgba(59, 130, 246, 0.3)';
+                                    (e.target as HTMLButtonElement).style.background = 'rgba(59, 130, 246, 0.2)';
+                                    (e.target as HTMLButtonElement).style.borderColor = 'rgba(59, 130, 246, 0.3)';
                                 }}
                             >
                                 + Add New Playlist

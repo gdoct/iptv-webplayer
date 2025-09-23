@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import type { Channel as M3UChannel } from '../types/m3u';
-import type { Channel as StyleChannel } from 'iptv-style-library';
+import type { Channel as StyleChannel } from '@ipts/ipts-styles';
 
 export interface VideoPlayerState {
   currentChannel: StyleChannel | null;

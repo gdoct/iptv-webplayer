@@ -3,7 +3,7 @@ import React, { useState } from "react";
 export type Playlist = {
     id: string;
     name: string;
-    url: string;
+    url?: string;
     channelCount: number;
     isActive?: boolean;
     lastUpdated?: Date;
