@@ -17,5 +17,6 @@ export default defineConfig({
         warn(warning)
       }
     }
-  }
+  },
+  publicDir: 'public'
 })
