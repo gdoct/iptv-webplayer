@@ -6,6 +6,9 @@ Welcome to your personal IPTV streaming paradise! 🎉
 
 This delightful web application brings IPTV streaming right to your browser with style! Whether you're a cord-cutter, streaming enthusiast, or just want to organize your favorite channels, we've got you covered.
 
+## Screenshots
+<img width="1638" height="1267" alt="image" src="https://github.com/user-attachments/assets/71eb41ab-469d-4b1f-8dab-4f6e1b1895d7" />
+
 ## 🚀 Amazing Features
 
 - **🌐 Web-Based Magic** - No downloads needed! Stream MPEG-TS content directly in your browser
