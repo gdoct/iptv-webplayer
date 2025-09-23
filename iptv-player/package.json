@@ -14,6 +14,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@ipts/ipts-styles": "../iptv-style-library",
     "mpegts.js": "^1.8.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1"
