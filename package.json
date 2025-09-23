@@ -1,0 +1,7 @@
+{
+  "private": true,
+  "workspaces": [
+    "iptv-player",
+    "iptv-style-library"
+  ]
+}

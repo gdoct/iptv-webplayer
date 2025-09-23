@@ -1,7 +1,7 @@
 {
   "name": "iptv-player",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "homepage": "https://gdoct.github.io/iptv-webplayer",
   "scripts": {
@@ -14,7 +14,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@ipts/ipts-styles": "../iptv-style-library",
+    "@ipts/ipts-styles": "*",
     "mpegts.js": "^1.8.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1"
