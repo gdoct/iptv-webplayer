@@ -1,0 +1,18 @@
+/* IPTS Styles - Main stylesheet */
+@import './tokens.css';
+@import './components.css';
+
+/* Reset and base styles */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--ipts-font-family-sans);
+  font-size: var(--ipts-font-size-base);
+  line-height: var(--ipts-line-height-normal);
+  color: var(--ipts-color-text-primary);
+  background-color: var(--ipts-color-background);
+}
