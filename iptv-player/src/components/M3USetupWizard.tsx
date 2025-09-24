@@ -199,7 +199,8 @@ export function M3USetupWizard({
             margin: '0 auto 32px auto'
           }}>
             To get started, you'll need to provide an M3U playlist containing your IPTV channels.
-            This can be uploaded as a file or loaded from a URL.
+            This can be provided as a file or downloaded from a URL. 
+            Your playlist will not be uploaded - it will be saved in local storage on your device.
           </p>
           <div style={{
             background: 'rgba(59, 130, 246, 0.1)',
