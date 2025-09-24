@@ -42,6 +42,10 @@ export interface WizardProps extends React.HTMLAttributes<HTMLDivElement> {
    */
   onStepChange?: (stepIndex: number) => void;
   /**
+   * Whether to allow cancellation
+   */
+  allowCancel?: boolean;
+  /**
    * Whether to show progress indicator.
    */
   showProgress?: boolean;
@@ -77,6 +81,7 @@ const Wizard = React.forwardRef<HTMLDivElement, WizardProps>(
     onComplete,
     onCancel,
     onStepChange,
+    allowCancel = true,
     showProgress = true,
     showStepNumbers = true,
     allowStepClick = false,
@@ -423,7 +428,7 @@ const Wizard = React.forwardRef<HTMLDivElement, WizardProps>(
               alignItems: 'center'
             }}
           >
-            {cancelCaption && (
+            {allowCancel && cancelCaption && (
               <button
                 className="wizard__cancel-button"
                 onClick={onCancel}

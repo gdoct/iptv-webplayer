@@ -170,6 +170,75 @@ export function M3USetupWizard({
 
   const steps: WizardStep[] = [
     {
+      id: 'welcome',
+      title: 'Welcome',
+      validation: async () => true, // Always valid, just informational
+      content: (
+        <div style={{ textAlign: 'center' }}>
+          <div style={{
+            fontSize: '48px',
+            marginBottom: '24px'
+          }}>
+            📺
+          </div>
+          <h3 style={{
+            margin: '0 0 16px 0',
+            fontSize: '28px',
+            fontWeight: '600',
+            color: '#ffffff',
+            lineHeight: '1.3'
+          }}>
+            Welcome to IPTV Web Player!
+          </h3>
+          <p style={{
+            marginBottom: '32px',
+            color: 'rgba(255, 255, 255, 0.8)',
+            fontSize: '18px',
+            lineHeight: '1.6',
+            maxWidth: '500px',
+            margin: '0 auto 32px auto'
+          }}>
+            To get started, you'll need to provide an M3U playlist containing your IPTV channels.
+            This can be uploaded as a file or loaded from a URL.
+          </p>
+          <div style={{
+            background: 'rgba(59, 130, 246, 0.1)',
+            border: '1px solid rgba(59, 130, 246, 0.2)',
+            borderRadius: '8px',
+            padding: '20px',
+            marginTop: '24px',
+            maxWidth: '500px'
+          }}>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '12px',
+              marginBottom: '12px'
+            }}>
+              <div style={{ fontSize: '20px' }}>💡</div>
+              <span style={{
+                color: '#3b82f6',
+                fontWeight: '600',
+                fontSize: '16px'
+              }}>
+                What's an M3U playlist?
+              </span>
+            </div>
+            <p style={{
+              color: 'rgba(255, 255, 255, 0.7)',
+              fontSize: '14px',
+              lineHeight: '1.5',
+              margin: 0
+            }}>
+              An M3U playlist is a file format that contains a list of IPTV channels with their streaming URLs.
+              It's commonly used by IPTV providers to deliver channel lists to their customers.
+            </p>
+          </div>
+        </div>
+      )
+    },
+    {
       id: 'method',
       title: 'Choose Method',
       validation: validateMethod,
@@ -448,6 +517,7 @@ export function M3USetupWizard({
       onComplete={handleComplete}
       onCancel={allowCancel && onCancel ? onCancel : () => {}}
       size="md"
+      allowCancel={allowCancel}
       captions={{
         finishCaption: loading ? 'Adding Playlist...' : 'Add Playlist',
         cancelCaption: allowCancel ? 'Cancel' : undefined
