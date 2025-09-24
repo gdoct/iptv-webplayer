@@ -6,13 +6,7 @@ Welcome to your personal IPTV streaming paradise! 🎉
 
 This delightful web application brings IPTV streaming right to your browser with style! Whether you're a cord-cutter, streaming enthusiast, or just want to organize your favorite channels, we've got you covered.
 
-Try it here! https://gdoct.github.io/iptv-webplayer/index.html
-
-## Screenshots
-<img width="1000" height="750q" alt="image" src="https://github.com/user-attachments/assets/71eb41ab-469d-4b1f-8dab-4f6e1b1895d7" />
-
-<img width="676" height="764" alt="image" src="https://github.com/user-attachments/assets/888990a4-6c2a-405d-973c-0c292204d4ef" />
-
+Try it here! https://gdoct.github.io/iptv-webplayer/index.html (GitHub Pages deployment supports only https video streams)
 
 ## 🚀 Amazing Features
 
