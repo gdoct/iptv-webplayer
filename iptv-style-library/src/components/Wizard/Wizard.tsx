@@ -202,7 +202,18 @@ const Wizard = React.forwardRef<HTMLDivElement, WizardProps>(
       if (!showProgress) return null;
 
       return (
-        <div className="wizard__progress">
+        <div
+          className="wizard__progress"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '8px',
+            padding: '24px',
+            borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+            marginBottom: '24px'
+          }}
+        >
           {steps.map((step, index) => {
             const status = getStepStatus(index);
             const isClickable = allowStepClick && (index <= state.currentStep || state.completedSteps.has(index));
@@ -212,9 +223,34 @@ const Wizard = React.forwardRef<HTMLDivElement, WizardProps>(
                 <div
                   className={`wizard__step ${status === 'current' ? 'wizard__step--current' : ''} ${status === 'completed' ? 'wizard__step--completed' : ''} ${status === 'pending' ? 'wizard__step--pending' : ''} ${isClickable ? 'wizard__step--clickable' : ''}`.trim()}
                   onClick={() => handleStepClick(index)}
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: '8px',
+                    cursor: isClickable ? 'pointer' : 'default',
+                    opacity: status === 'pending' ? 0.6 : 1,
+                    transition: 'all 0.2s'
+                  }}
                 >
                   {/* Step circle */}
-                  <div className="wizard__step-circle">
+                  <div
+                    className="wizard__step-circle"
+                    style={{
+                      width: '32px',
+                      height: '32px',
+                      borderRadius: '50%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '14px',
+                      fontWeight: '600',
+                      border: '2px solid',
+                      borderColor: status === 'completed' ? '#22c55e' : status === 'current' ? '#3b82f6' : 'rgba(255, 255, 255, 0.3)',
+                      backgroundColor: status === 'completed' ? 'rgba(34, 197, 94, 0.2)' : status === 'current' ? 'rgba(59, 130, 246, 0.2)' : 'rgba(255, 255, 255, 0.05)',
+                      color: status === 'completed' ? '#22c55e' : status === 'current' ? '#3b82f6' : 'rgba(255, 255, 255, 0.7)'
+                    }}
+                  >
                     {status === 'completed' ? (
                       <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
@@ -225,14 +261,31 @@ const Wizard = React.forwardRef<HTMLDivElement, WizardProps>(
                   </div>
 
                   {/* Step title */}
-                  <span className="wizard__step-title">
+                  <span
+                    className="wizard__step-title"
+                    style={{
+                      fontSize: '12px',
+                      color: status === 'current' ? '#ffffff' : 'rgba(255, 255, 255, 0.7)',
+                      textAlign: 'center',
+                      maxWidth: '80px',
+                      wordBreak: 'break-word'
+                    }}
+                  >
                     {step.title}
                   </span>
                 </div>
 
                 {/* Connector line */}
                 {index < steps.length - 1 && (
-                  <div className={`wizard__connector ${index < state.currentStep ? 'wizard__connector--completed' : ''}`.trim()} />
+                  <div
+                    className={`wizard__connector ${index < state.currentStep ? 'wizard__connector--completed' : ''}`.trim()}
+                    style={{
+                      width: '40px',
+                      height: '2px',
+                      backgroundColor: index < state.currentStep ? '#22c55e' : 'rgba(255, 255, 255, 0.2)',
+                      transition: 'background-color 0.2s'
+                    }}
+                  />
                 )}
               </React.Fragment>
             );
@@ -246,18 +299,55 @@ const Wizard = React.forwardRef<HTMLDivElement, WizardProps>(
       const errorMessage = state.stepErrors.get(state.currentStep);
 
       return (
-        <div className="wizard__content">
+        <div
+          className="wizard__content"
+          style={{ padding: '0 24px 24px 24px' }}
+        >
           {/* Step title */}
-          <h2 className="wizard__step-content-title">
+          <h2
+            className="wizard__step-content-title"
+            style={{
+              margin: '0 0 24px 0',
+              fontSize: '24px',
+              fontWeight: '600',
+              color: '#ffffff',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px'
+            }}
+          >
             {currentStepData?.title}
             {currentStepData?.isOptional && (
-              <span className="wizard__optional-label">(Optional)</span>
+              <span
+                className="wizard__optional-label"
+                style={{
+                  background: 'rgba(255, 255, 255, 0.1)',
+                  color: 'rgba(255, 255, 255, 0.7)',
+                  fontSize: '12px',
+                  padding: '2px 8px',
+                  borderRadius: '12px',
+                  border: '1px solid rgba(255, 255, 255, 0.2)'
+                }}
+              >
+                (Optional)
+              </span>
             )}
           </h2>
 
           {/* Error message */}
           {hasError && (
-            <div className="wizard__error">
+            <div
+              className="wizard__error"
+              style={{
+                background: 'rgba(239, 68, 68, 0.1)',
+                border: '1px solid rgba(239, 68, 68, 0.2)',
+                borderRadius: '6px',
+                padding: '12px',
+                marginBottom: '20px',
+                color: '#ef4444',
+                fontSize: '14px'
+              }}
+            >
               {errorMessage}
             </div>
           )}
@@ -271,32 +361,119 @@ const Wizard = React.forwardRef<HTMLDivElement, WizardProps>(
     };
 
     const renderFooter = () => {
+      // Add spinner animation CSS if not already present
+      if (!document.querySelector('#wizard-spinner-styles')) {
+        const style = document.createElement('style');
+        style.id = 'wizard-spinner-styles';
+        style.textContent = `
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        `;
+        document.head.appendChild(style);
+      }
+
       return (
-        <div className="wizard__footer">
+        <div
+          className="wizard__footer"
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            padding: '20px 24px',
+            borderTop: '1px solid rgba(255, 255, 255, 0.1)',
+            backgroundColor: 'rgba(255, 255, 255, 0.02)'
+          }}
+        >
           <div className="wizard__footer-left">
             {currentStepData?.canSkip && !isLastStep && (
               <button
                 className="wizard__skip-button"
                 onClick={handleSkip}
+                style={{
+                  background: 'rgba(255, 255, 255, 0.05)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  color: 'rgba(255, 255, 255, 0.7)',
+                  borderRadius: '6px',
+                  padding: '10px 16px',
+                  fontSize: '14px',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s'
+                }}
+                onMouseOver={(e) => {
+                  (e.target as HTMLButtonElement).style.background = 'rgba(255, 255, 255, 0.1)';
+                  (e.target as HTMLButtonElement).style.color = '#ffffff';
+                }}
+                onMouseOut={(e) => {
+                  (e.target as HTMLButtonElement).style.background = 'rgba(255, 255, 255, 0.05)';
+                  (e.target as HTMLButtonElement).style.color = 'rgba(255, 255, 255, 0.7)';
+                }}
               >
                 {skipCaption}
               </button>
             )}
           </div>
 
-          <div className="wizard__footer-right">
-            <button
-              className="wizard__cancel-button"
-              onClick={onCancel}
-            >
-              {cancelCaption}
-            </button>
+          <div
+            className="wizard__footer-right"
+            style={{
+              display: 'flex',
+              gap: '12px',
+              alignItems: 'center'
+            }}
+          >
+            {cancelCaption && (
+              <button
+                className="wizard__cancel-button"
+                onClick={onCancel}
+                style={{
+                  background: 'rgba(255, 255, 255, 0.05)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  color: 'rgba(255, 255, 255, 0.7)',
+                  borderRadius: '6px',
+                  padding: '10px 16px',
+                  fontSize: '14px',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s'
+                }}
+                onMouseOver={(e) => {
+                  (e.target as HTMLButtonElement).style.background = 'rgba(255, 255, 255, 0.1)';
+                  (e.target as HTMLButtonElement).style.color = '#ffffff';
+                }}
+                onMouseOut={(e) => {
+                  (e.target as HTMLButtonElement).style.background = 'rgba(255, 255, 255, 0.05)';
+                  (e.target as HTMLButtonElement).style.color = 'rgba(255, 255, 255, 0.7)';
+                }}
+              >
+                {cancelCaption}
+              </button>
+            )}
 
             {!isFirstStep && (
               <button
                 className="wizard__previous-button"
                 onClick={handlePrevious}
                 disabled={state.isValidating}
+                style={{
+                  background: 'rgba(255, 255, 255, 0.1)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  color: '#ffffff',
+                  borderRadius: '6px',
+                  padding: '10px 16px',
+                  fontSize: '14px',
+                  cursor: state.isValidating ? 'not-allowed' : 'pointer',
+                  transition: 'all 0.2s',
+                  opacity: state.isValidating ? 0.6 : 1
+                }}
+                onMouseOver={(e) => {
+                  if (!state.isValidating) {
+                    (e.target as HTMLButtonElement).style.background = 'rgba(255, 255, 255, 0.15)';
+                  }
+                }}
+                onMouseOut={(e) => {
+                  (e.target as HTMLButtonElement).style.background = 'rgba(255, 255, 255, 0.1)';
+                }}
               >
                 {currentStepData?.previousButtonText || previousCaption}
               </button>
@@ -306,9 +483,44 @@ const Wizard = React.forwardRef<HTMLDivElement, WizardProps>(
               className="wizard__next-button"
               onClick={handleNext}
               disabled={state.isValidating}
+              style={{
+                background: state.isValidating ? 'rgba(59, 130, 246, 0.1)' : 'rgba(59, 130, 246, 0.2)',
+                border: '1px solid rgba(59, 130, 246, 0.3)',
+                color: '#3b82f6',
+                borderRadius: '6px',
+                padding: '10px 16px',
+                fontSize: '14px',
+                fontWeight: '500',
+                cursor: state.isValidating ? 'not-allowed' : 'pointer',
+                transition: 'all 0.2s',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                opacity: state.isValidating ? 0.8 : 1
+              }}
+              onMouseOver={(e) => {
+                if (!state.isValidating) {
+                  (e.target as HTMLButtonElement).style.background = 'rgba(59, 130, 246, 0.3)';
+                  (e.target as HTMLButtonElement).style.borderColor = 'rgba(59, 130, 246, 0.4)';
+                }
+              }}
+              onMouseOut={(e) => {
+                (e.target as HTMLButtonElement).style.background = state.isValidating ? 'rgba(59, 130, 246, 0.1)' : 'rgba(59, 130, 246, 0.2)';
+                (e.target as HTMLButtonElement).style.borderColor = 'rgba(59, 130, 246, 0.3)';
+              }}
             >
               {state.isValidating && (
-                <div className="wizard__loading-spinner" />
+                <div
+                  className="wizard__loading-spinner"
+                  style={{
+                    width: '14px',
+                    height: '14px',
+                    border: '2px solid rgba(59, 130, 246, 0.3)',
+                    borderTop: '2px solid #3b82f6',
+                    borderRadius: '50%',
+                    animation: 'spin 1s linear infinite'
+                  }}
+                />
               )}
               {isLastStep
                 ? finishCaption

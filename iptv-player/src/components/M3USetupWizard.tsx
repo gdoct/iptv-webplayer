@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Wizard, type WizardStep, TextInput } from '@ipts/ipts-styles';
+import { Wizard, type WizardStep } from '@ipts/ipts-styles';
 import { M3UService } from '../services/m3uService';
 
 export interface M3USetupWizardProps {
@@ -21,7 +21,7 @@ export function M3USetupWizard({
   isOpen,
   onComplete,
   onCancel,
-  allowCancel = true
+  allowCancel = false
 }: M3USetupWizardProps) {
   const [wizardData, setWizardData] = useState<WizardData>({
     method: 'file',
@@ -174,34 +174,49 @@ export function M3USetupWizard({
       title: 'Choose Method',
       validation: validateMethod,
       content: (
-        <div style={{ padding: '1rem 0' }}>
-          <p style={{ marginBottom: '1.5rem', color: '#666' }}>
+        <div>
+          <p style={{
+            marginBottom: '24px',
+            color: 'rgba(255, 255, 255, 0.8)',
+            fontSize: '16px',
+            lineHeight: '1.5'
+          }}>
             How would you like to add your IPTV playlist?
           </p>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             <label style={{
               display: 'flex',
               alignItems: 'center',
-              gap: '0.75rem',
-              padding: '1rem',
-              border: `2px solid ${wizardData.method === 'file' ? '#007bff' : '#e9ecef'}`,
+              gap: '16px',
+              padding: '20px',
+              border: `2px solid ${wizardData.method === 'file' ? 'rgba(59, 130, 246, 0.5)' : 'rgba(255, 255, 255, 0.2)'}`,
+              background: wizardData.method === 'file' ? 'rgba(59, 130, 246, 0.1)' : 'rgba(255, 255, 255, 0.05)',
               borderRadius: '8px',
               cursor: 'pointer',
-              transition: 'border-color 0.2s'
+              transition: 'all 0.2s'
             }}>
               <input
                 type="radio"
                 value="file"
                 checked={wizardData.method === 'file'}
                 onChange={(e) => updateWizardData({ method: e.target.value as 'file' })}
-                style={{ margin: 0 }}
+                style={{ margin: 0, accentColor: '#3b82f6' }}
               />
               <div>
-                <div style={{ fontWeight: '600', marginBottom: '0.25rem' }}>
+                <div style={{
+                  fontWeight: '600',
+                  marginBottom: '4px',
+                  color: '#ffffff',
+                  fontSize: '16px'
+                }}>
                   📁 Upload File
                 </div>
-                <div style={{ fontSize: '0.875rem', color: '#666' }}>
+                <div style={{
+                  fontSize: '14px',
+                  color: 'rgba(255, 255, 255, 0.7)',
+                  lineHeight: '1.4'
+                }}>
                   Upload an M3U or M3U8 file from your device
                 </div>
               </div>
@@ -210,25 +225,35 @@ export function M3USetupWizard({
             <label style={{
               display: 'flex',
               alignItems: 'center',
-              gap: '0.75rem',
-              padding: '1rem',
-              border: `2px solid ${wizardData.method === 'url' ? '#007bff' : '#e9ecef'}`,
+              gap: '16px',
+              padding: '20px',
+              border: `2px solid ${wizardData.method === 'url' ? 'rgba(59, 130, 246, 0.5)' : 'rgba(255, 255, 255, 0.2)'}`,
+              background: wizardData.method === 'url' ? 'rgba(59, 130, 246, 0.1)' : 'rgba(255, 255, 255, 0.05)',
               borderRadius: '8px',
               cursor: 'pointer',
-              transition: 'border-color 0.2s'
+              transition: 'all 0.2s'
             }}>
               <input
                 type="radio"
                 value="url"
                 checked={wizardData.method === 'url'}
                 onChange={(e) => updateWizardData({ method: e.target.value as 'url' })}
-                style={{ margin: 0 }}
+                style={{ margin: 0, accentColor: '#3b82f6' }}
               />
               <div>
-                <div style={{ fontWeight: '600', marginBottom: '0.25rem' }}>
+                <div style={{
+                  fontWeight: '600',
+                  marginBottom: '4px',
+                  color: '#ffffff',
+                  fontSize: '16px'
+                }}>
                   🌐 Load from URL
                 </div>
-                <div style={{ fontSize: '0.875rem', color: '#666' }}>
+                <div style={{
+                  fontSize: '14px',
+                  color: 'rgba(255, 255, 255, 0.7)',
+                  lineHeight: '1.4'
+                }}>
                   Load a playlist directly from a web URL
                 </div>
               </div>
@@ -242,10 +267,15 @@ export function M3USetupWizard({
       title: wizardData.method === 'file' ? 'Select File' : 'Enter URL',
       validation: validateSource,
       content: (
-        <div style={{ padding: '1rem 0' }}>
+        <div>
           {wizardData.method === 'file' ? (
             <div>
-              <p style={{ marginBottom: '1.5rem', color: '#666' }}>
+              <p style={{
+                marginBottom: '24px',
+                color: 'rgba(255, 255, 255, 0.8)',
+                fontSize: '16px',
+                lineHeight: '1.5'
+              }}>
                 Select your M3U playlist file from your device.
               </p>
 
@@ -256,25 +286,36 @@ export function M3USetupWizard({
                 onChange={handleFileSelect}
                 style={{
                   width: '100%',
-                  padding: '0.75rem',
-                  border: '2px dashed #ddd',
+                  padding: '16px',
+                  border: '2px dashed rgba(255, 255, 255, 0.3)',
                   borderRadius: '8px',
-                  backgroundColor: '#f8f9fa',
-                  fontSize: '0.875rem'
+                  backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                  color: '#ffffff',
+                  fontSize: '14px',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s'
                 }}
+                onFocus={(e) => (e.target as HTMLInputElement).style.borderColor = 'rgba(59, 130, 246, 0.5)'}
+                onBlur={(e) => (e.target as HTMLInputElement).style.borderColor = 'rgba(255, 255, 255, 0.3)'}
               />
 
-              <div style={{ fontSize: '0.75rem', color: '#666', marginTop: '0.5rem' }}>
+              <div style={{
+                fontSize: '12px',
+                color: 'rgba(255, 255, 255, 0.6)',
+                marginTop: '8px'
+              }}>
                 Supported formats: .m3u, .m3u8, .txt
               </div>
 
               {wizardData.fileName && (
                 <div style={{
-                  marginTop: '1rem',
-                  padding: '0.75rem',
-                  backgroundColor: '#e8f5e8',
-                  borderRadius: '4px',
-                  border: '1px solid #28a745'
+                  marginTop: '16px',
+                  padding: '12px',
+                  backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                  borderRadius: '6px',
+                  border: '1px solid rgba(34, 197, 94, 0.2)',
+                  color: '#22c55e',
+                  fontSize: '14px'
                 }}>
                   ✅ File selected: {wizardData.fileName}
                 </div>
@@ -282,18 +323,40 @@ export function M3USetupWizard({
             </div>
           ) : (
             <div>
-              <p style={{ marginBottom: '1.5rem', color: '#666' }}>
+              <p style={{
+                marginBottom: '24px',
+                color: 'rgba(255, 255, 255, 0.8)',
+                fontSize: '16px',
+                lineHeight: '1.5'
+              }}>
                 Enter the URL of your M3U playlist.
               </p>
 
-              <TextInput
+              <input
+                type="url"
                 placeholder="https://example.com/playlist.m3u"
                 value={wizardData.playlistUrl}
                 onChange={(e) => updateWizardData({ playlistUrl: e.target.value })}
-                style={{ width: '100%' }}
+                style={{
+                  width: '100%',
+                  background: 'rgba(255, 255, 255, 0.1)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  borderRadius: '6px',
+                  padding: '12px',
+                  color: '#ffffff',
+                  fontSize: '14px',
+                  outline: 'none',
+                  transition: 'border-color 0.2s'
+                }}
+                onFocus={(e) => (e.target as HTMLInputElement).style.borderColor = 'rgba(59, 130, 246, 0.5)'}
+                onBlur={(e) => (e.target as HTMLInputElement).style.borderColor = 'rgba(255, 255, 255, 0.2)'}
               />
 
-              <div style={{ fontSize: '0.75rem', color: '#666', marginTop: '0.5rem' }}>
+              <div style={{
+                fontSize: '12px',
+                color: 'rgba(255, 255, 255, 0.6)',
+                marginTop: '8px'
+              }}>
                 The URL should point directly to an M3U or M3U8 file
               </div>
             </div>
@@ -301,12 +364,13 @@ export function M3USetupWizard({
 
           {error && (
             <div style={{
-              marginTop: '1rem',
-              padding: '0.75rem',
-              backgroundColor: '#ffe6e6',
-              color: '#d00',
-              borderRadius: '4px',
-              border: '1px solid #dc3545'
+              marginTop: '16px',
+              padding: '12px',
+              backgroundColor: 'rgba(239, 68, 68, 0.1)',
+              color: '#ef4444',
+              borderRadius: '6px',
+              border: '1px solid rgba(239, 68, 68, 0.2)',
+              fontSize: '14px'
             }}>
               {error}
             </div>
@@ -319,32 +383,55 @@ export function M3USetupWizard({
       title: 'Name Your Playlist',
       validation: validateName,
       content: (
-        <div style={{ padding: '1rem 0' }}>
-          <p style={{ marginBottom: '1.5rem', color: '#666' }}>
+        <div>
+          <p style={{
+            marginBottom: '24px',
+            color: 'rgba(255, 255, 255, 0.8)',
+            fontSize: '16px',
+            lineHeight: '1.5'
+          }}>
             Give your playlist a memorable name.
           </p>
 
-          <TextInput
+          <input
+            type="text"
             placeholder="My IPTV Playlist"
             value={wizardData.playlistName}
             onChange={(e) => updateWizardData({ playlistName: e.target.value })}
-            style={{ width: '100%' }}
+            style={{
+              width: '100%',
+              background: 'rgba(255, 255, 255, 0.1)',
+              border: '1px solid rgba(255, 255, 255, 0.2)',
+              borderRadius: '6px',
+              padding: '12px',
+              color: '#ffffff',
+              fontSize: '14px',
+              outline: 'none',
+              transition: 'border-color 0.2s'
+            }}
+            onFocus={(e) => (e.target as HTMLInputElement).style.borderColor = 'rgba(59, 130, 246, 0.5)'}
+            onBlur={(e) => (e.target as HTMLInputElement).style.borderColor = 'rgba(255, 255, 255, 0.2)'}
           />
 
           {wizardData.fileName && (
-            <div style={{ fontSize: '0.75rem', color: '#666', marginTop: '0.5rem' }}>
+            <div style={{
+              fontSize: '12px',
+              color: 'rgba(255, 255, 255, 0.6)',
+              marginTop: '8px'
+            }}>
               Default name from file: {wizardData.fileName.replace(/\.(m3u8?|txt)$/i, '')}
             </div>
           )}
 
           {error && (
             <div style={{
-              marginTop: '1rem',
-              padding: '0.75rem',
-              backgroundColor: '#ffe6e6',
-              color: '#d00',
-              borderRadius: '4px',
-              border: '1px solid #dc3545'
+              marginTop: '16px',
+              padding: '12px',
+              backgroundColor: 'rgba(239, 68, 68, 0.1)',
+              color: '#ef4444',
+              borderRadius: '6px',
+              border: '1px solid rgba(239, 68, 68, 0.2)',
+              fontSize: '14px'
             }}>
               {error}
             </div>

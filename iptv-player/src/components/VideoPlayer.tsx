@@ -38,6 +38,7 @@ export function VideoPlayer({
     if (!video || !url) return;
 
     try {
+
       const player = createPlayer({
         type: 'mpegts',
         url,
@@ -50,43 +51,57 @@ export function VideoPlayer({
       playerRef.current = player;
 
       const handleLoadStart = () => {
-        setIsLoading(true);
-        onLoadingChange?.(true);
-      };
-      const handleCanPlay = () => {
-        setIsLoading(false);
-        onLoadingChange?.(false);
-      };
-      const handleError = () => {
-        const errorMsg = 'Failed to load video stream';
-        setError(errorMsg);
-        setIsLoading(false);
-        onError?.(errorMsg);
-        onLoadingChange?.(false);
-      };
-      const handlePlay = () => onPlayingChange?.(true);
-      const handlePause = () => onPlayingChange?.(false);
+          setIsLoading(true);
+          onLoadingChange?.(true);
+        };
+        const handleCanPlay = () => {
+          setIsLoading(false);
+          onLoadingChange?.(false);
+        };
+        const handleError = () => {
+          // Detect mixed content blocking
+          const isMixedContent = window.location.protocol === 'https:' && url.startsWith('http://');
 
-      video.addEventListener('loadstart', handleLoadStart);
-      video.addEventListener('canplay', handleCanPlay);
-      video.addEventListener('error', handleError);
-      video.addEventListener('play', handlePlay);
-      video.addEventListener('pause', handlePause);
+          let errorMsg = 'Failed to load video stream';
+          if (isMixedContent) {
+            errorMsg = '⚠️ Mixed Content Blocked: Cannot load HTTP stream on HTTPS site. Please serve this site over HTTP or use HTTPS streams.';
+          }
 
-      return () => {
-        video.removeEventListener('loadstart', handleLoadStart);
-        video.removeEventListener('canplay', handleCanPlay);
-        video.removeEventListener('error', handleError);
-        video.removeEventListener('play', handlePlay);
-        video.removeEventListener('pause', handlePause);
+          setError(errorMsg);
+          setIsLoading(false);
+          onError?.(errorMsg);
+          onLoadingChange?.(false);
+        };
+        const handlePlay = () => onPlayingChange?.(true);
+        const handlePause = () => onPlayingChange?.(false);
 
-        if (playerRef.current) {
-          playerRef.current.destroy();
-          playerRef.current = null;
-        }
-      };
+        video.addEventListener('loadstart', handleLoadStart);
+        video.addEventListener('canplay', handleCanPlay);
+        video.addEventListener('error', handleError);
+        video.addEventListener('play', handlePlay);
+        video.addEventListener('pause', handlePause);
+
+        return () => {
+          video.removeEventListener('loadstart', handleLoadStart);
+          video.removeEventListener('canplay', handleCanPlay);
+          video.removeEventListener('error', handleError);
+          video.removeEventListener('play', handlePlay);
+          video.removeEventListener('pause', handlePause);
+
+          if (playerRef.current) {
+            playerRef.current.destroy();
+            playerRef.current = null;
+          }
+        };
     } catch (err) {
-      const errorMsg = `Failed to initialize player: ${err instanceof Error ? err.message : 'Unknown error'}`;
+      // Check if this is a mixed content error
+      const isMixedContent = window.location.protocol === 'https:' && url.startsWith('http://');
+
+      let errorMsg = `Failed to initialize player: ${err instanceof Error ? err.message : 'Unknown error'}`;
+      if (isMixedContent) {
+        errorMsg = '⚠️ Mixed Content Blocked: Cannot load HTTP stream on HTTPS site. Please serve this site over HTTP or use HTTPS streams.';
+      }
+
       setError(errorMsg);
       setIsLoading(false);
       onError?.(errorMsg);
