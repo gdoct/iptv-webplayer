@@ -3,5 +3,8 @@
   "workspaces": [
     "iptv-player",
     "iptv-style-library"
-  ]
+  ],
+  "scripts": {
+    "build:single": "yarn workspace iptv-player build:single"
+  }
 }

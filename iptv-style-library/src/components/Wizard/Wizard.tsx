@@ -85,7 +85,7 @@ const Wizard = React.forwardRef<HTMLDivElement, WizardProps>(
     showProgress = true,
     showStepNumbers = true,
     allowStepClick = false,
-    size = 'lg',
+    size = 'xl',
     captions = {},
     className = '',
     ...rest
@@ -306,7 +306,12 @@ const Wizard = React.forwardRef<HTMLDivElement, WizardProps>(
       return (
         <div
           className="wizard__content"
-          style={{ padding: '0 24px 24px 24px' }}
+          style={{
+            padding: '0 24px 24px 24px',
+            flex: 1,
+            overflowY: 'auto',
+            overflowX: 'hidden'
+          }}
         >
           {/* Step title */}
           <h2
