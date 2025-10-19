@@ -92,12 +92,15 @@ function App() {
     );
   }, [adaptedChannels, selectedGroupId, channelGroups]);
 
-  // Show/hide channel info overlay on mouse hover with auto-hide
+  // Show/hide channel info overlay with intentional user interaction detection
   useEffect(() => {
     let hideTimer: number;
+    let mouseMovementTimer: number;
+    let lastMouseMovement = 0;
+    let isMouseActive = false;
 
     const handleShowOverlay = () => {
-      if (videoPlayer.currentChannel && videoPlayer.currentChannelUrl) {
+      if (videoPlayer.currentChannel && videoPlayer.currentChannelUrl && isMouseActive) {
         setShowChannelInfo(true);
         // Clear any existing hide timer
         if (hideTimer) {
@@ -110,15 +113,48 @@ function App() {
       // Hide after 2 seconds when mouse leaves both areas
       hideTimer = window.setTimeout(() => {
         setShowChannelInfo(false);
+        isMouseActive = false;
       }, 2000);
+    };
+
+    const handleMouseMovement = () => {
+      const now = Date.now();
+
+      // If mouse movement occurred after 500ms of stillness, consider it intentional
+      if (now - lastMouseMovement > 500) {
+        isMouseActive = true;
+        handleShowOverlay();
+      }
+
+      lastMouseMovement = now;
+
+      // Clear previous timer and set new one
+      if (mouseMovementTimer) {
+        window.clearTimeout(mouseMovementTimer);
+      }
+
+      // Reset active state after 3 seconds of no movement
+      mouseMovementTimer = window.setTimeout(() => {
+        isMouseActive = false;
+        setShowChannelInfo(false);
+      }, 3000);
+    };
+
+    const handleKeyPress = () => {
+      // Any key press shows overlay
+      if (videoPlayer.currentChannel && videoPlayer.currentChannelUrl) {
+        isMouseActive = true;
+        handleShowOverlay();
+      }
     };
 
     const videoContainer = document.querySelector('.video-container');
     const channelOverlay = document.querySelector('.channel-info-overlay');
 
     if (videoContainer) {
-      videoContainer.addEventListener('mouseenter', handleShowOverlay);
+      videoContainer.addEventListener('mousemove', handleMouseMovement);
       videoContainer.addEventListener('mouseleave', handleHideOverlay);
+      videoContainer.addEventListener('click', handleShowOverlay);
     }
 
     if (channelOverlay) {
@@ -126,17 +162,25 @@ function App() {
       channelOverlay.addEventListener('mouseleave', handleHideOverlay);
     }
 
+    // Listen for key presses globally
+    document.addEventListener('keydown', handleKeyPress);
+
     return () => {
       if (videoContainer) {
-        videoContainer.removeEventListener('mouseenter', handleShowOverlay);
+        videoContainer.removeEventListener('mousemove', handleMouseMovement);
         videoContainer.removeEventListener('mouseleave', handleHideOverlay);
+        videoContainer.removeEventListener('click', handleShowOverlay);
       }
       if (channelOverlay) {
         channelOverlay.removeEventListener('mouseenter', handleShowOverlay);
         channelOverlay.removeEventListener('mouseleave', handleHideOverlay);
       }
+      document.removeEventListener('keydown', handleKeyPress);
       if (hideTimer) {
         window.clearTimeout(hideTimer);
+      }
+      if (mouseMovementTimer) {
+        window.clearTimeout(mouseMovementTimer);
       }
     };
   }, [videoPlayer.currentChannel, videoPlayer.currentChannelUrl, showChannelInfo]);

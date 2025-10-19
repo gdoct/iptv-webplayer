@@ -1,0 +1,9 @@
+version: '3.8'
+
+services:
+  iptvplayer:
+    build: .
+    image: iptvplayer
+    network_mode: host
+    restart: unless-stopped
+    container_name: iptvplayer
