@@ -81,7 +81,6 @@
 .wizard {
   display: flex;
   flex-direction: column;
-  height: 600px;
   max-height: 90vh;
   margin-top: var(--ipts-space-4);
 }
@@ -167,6 +166,39 @@
   padding: var(--ipts-space-6);
   display: flex;
   flex-direction: column;
+  overflow-y: auto;
+  overflow-x: hidden;
+  /* Hide scrollbar for webkit browsers */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+.wizard__content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.wizard__content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.wizard__content::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+.wizard__content::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+/* For small screens, hide scrollbar completely */
+@media (max-height: 768px) {
+  .wizard__content {
+    scrollbar-width: none;
+  }
+
+  .wizard__content::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 .wizard__step-content-title {
@@ -194,6 +226,7 @@
 
 .wizard__step-body {
   flex: 1;
+  min-height: 0;
 }
 
 .wizard__footer {

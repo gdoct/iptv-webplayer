@@ -517,7 +517,7 @@ export function M3USetupWizard({
       isOpen={isOpen}
       onComplete={handleComplete}
       onCancel={allowCancel && onCancel ? onCancel : () => {}}
-      size="md"
+      size="xl"
       allowCancel={allowCancel}
       captions={{
         finishCaption: loading ? 'Adding Playlist...' : 'Add Playlist',
