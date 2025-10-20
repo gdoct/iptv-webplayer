@@ -1,6 +1,8 @@
 # IPTV Web Player
 
-A lightweight, privacy-focused web-based IPTV player for streaming live TV channels directly in your browser.
+A lightweight, privacy-focused web-based IPTV player for streaming live TV channels in MPEG-TS format directly in the browser. 
+
+It builds to a **single html file** for optimal portability.
 
 ## Features
 
@@ -8,6 +10,8 @@ A lightweight, privacy-focused web-based IPTV player for streaming live TV chann
 - **Easy to Use** - Intuitive interface with drag-and-drop M3U playlist support
 - **Total Privacy** - All data processing happens locally in your browser. No telemetry, tracking, or external data transmission
 - **Docker Support** - Containerized deployment option for consistent hosting environments
+
+<img width="860" height="856" alt="image" src="https://github.com/user-attachments/assets/d8db0ec8-d6f8-4721-91d0-44ef4824ba0c" />
 
 ## Key Capabilities
 
