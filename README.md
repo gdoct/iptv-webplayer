@@ -1,34 +1,43 @@
-# 📺 IPTV Player - Your Private Streaming Experience
+# IPTV Web Player
 
-Welcome to your personal IPTV streaming paradise! 🎉
+A lightweight, privacy-focused web-based IPTV player for streaming live TV channels directly in your browser.
 
-## ✨ What makes this awesome?
+## Features
 
-This delightful web application brings IPTV streaming right to your browser with style! Whether you're a cord-cutter, streaming enthusiast, or just want to organize your favorite channels, we've got you covered.
+- **Single HTML File Deployment** - Builds to a single, self-contained HTML file for easy deployment and distribution
+- **Easy to Use** - Intuitive interface with drag-and-drop M3U playlist support
+- **Total Privacy** - All data processing happens locally in your browser. No telemetry, tracking, or external data transmission
+- **Docker Support** - Containerized deployment option for consistent hosting environments
 
-Try it here! https://gdoct.github.io/iptv-webplayer/index.html (GitHub Pages deployment supports only https video streams)
+## Key Capabilities
 
-## 🚀 Amazing Features
+- Stream MPEG-TS content directly in modern web browsers
+- Support for M3U/M3U8 playlist formats
+- Handle large channel lists (1000+ channels)
+- Multiple playlist management
+- Responsive design for various screen sizes
+- No server-side dependencies required
 
-- **🌐 Web-Based Magic** - No downloads needed! Stream MPEG-TS content directly in your browser
-- **📋 M3U Playlist Support** - Drop in your M3U channel lists and we'll handle the rest. The channel lists stay on your device!
-- **🏋️ Handles Big Lists** - Got 1000+ channels? No problem! We can handle massive playlists like a champ
-- **📚 Multiple Playlists** - Organize your content with multiple playlists (Sports, Movies, News - you name it!)
-- **🔒 100% Private** - Your viewing habits are yours alone - zero data leaves your device
-- **⚡ Lightning Fast** - Built with modern tech for smooth, responsive streaming
-- **🎨 Beautiful Interface** - Enjoy a sleek, intuitive design that just works
+## Deployment Options
 
-## Note
-- **📋 Does not support mixed content** - (https with http streaming) is not allowed in the browser. So if your iptv streams are http-only, you will typically run this application on your local machine or deploy to a http-only endpoint. 
+### Single File Build
+```bash
+yarn build
+```
+Generates a single HTML file containing the entire application.
 
-## 🏠 Complete Privacy
+### Docker
+```bash
+docker build -t iptv-player .
+docker run -p 8080:80 iptv-player
+```
 
-Your privacy matters! This app runs entirely on your machine - no telemetry, no tracking, no data collection. What you watch stays with you. 🔐
+## Technical Notes
 
-## 🎬 Ready to Stream?
+- HTTPS deployment required for mixed content compatibility
+- For HTTP-only streams, deploy to HTTP endpoints or run locally
+- Built with React, TypeScript, and Vite
 
-Jump in and experience the future of web-based IPTV streaming! Your channels are waiting.
+## Privacy
 
----
-
-*Happy Streaming! 🍿*
+This application operates entirely client-side. Your viewing preferences, playlist data, and streaming activity remain on your device and are never transmitted to external servers.
