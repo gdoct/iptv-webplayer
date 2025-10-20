@@ -142,3 +142,4 @@ vite.config.ts.timestamp-*
 .vite/
 .claude/
 .vscode/
+deploy.sh.user
