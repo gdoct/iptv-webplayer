@@ -4,6 +4,8 @@ A lightweight, privacy-focused web-based IPTV player for streaming live TV chann
 
 It builds to a **single html file** for optimal portability.
 
+[Try it here!](https://gdoct.github.io/iptv-webplayer/) (requires an m3u file)
+
 ## Features
 
 - **Single HTML File Deployment** - Builds to a single, self-contained HTML file for easy deployment and distribution
