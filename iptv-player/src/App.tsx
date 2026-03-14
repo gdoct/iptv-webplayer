@@ -6,6 +6,7 @@ import { HamburgerMenu, SideBar } from '@ipts/ipts-styles'
 import type { Channel as StyleChannel, Playlist as StylePlaylist } from '@ipts/ipts-styles'
 import { useM3UPlaylists } from './hooks/useM3UPlaylists'
 import { useVideoPlayer } from './hooks/useVideoPlayer'
+import { useFavorites } from './hooks/useFavorites'
 import { adaptM3UChannelsToStyleChannels, adaptM3UPlaylistsToStylePlaylists } from './utils/typeAdapters'
 
 function App() {
@@ -30,6 +31,15 @@ function App() {
   } = useM3UPlaylists()
 
   const videoPlayer = useVideoPlayer()
+
+  const {
+    favoriteChannelIds,
+    favoriteGroupIds,
+    favoritePlaylistIds,
+    toggleFavoriteChannel,
+    toggleFavoriteGroup,
+    toggleFavoritePlaylist,
+  } = useFavorites()
 
   // Convert M3U types to Style Library types
   const adaptedChannels = adaptM3UChannelsToStyleChannels(channels)
@@ -260,6 +270,12 @@ function App() {
           await addPlaylist(name, content)
           console.log('File upload completed successfully')
         }}
+        favoriteChannelIds={favoriteChannelIds}
+        onToggleFavoriteChannel={toggleFavoriteChannel}
+        favoriteGroupIds={favoriteGroupIds}
+        onToggleFavoriteGroup={toggleFavoriteGroup}
+        favoritePlaylistIds={favoritePlaylistIds}
+        onToggleFavoritePlaylist={toggleFavoritePlaylist}
         onResetToDefaults={() => {
           console.log('Reset to defaults requested')
           // Clear all playlists and show setup wizard

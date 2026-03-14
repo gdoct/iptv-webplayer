@@ -40,6 +40,14 @@ export type SettingsSectionProps = React.HTMLAttributes<HTMLDivElement> & {
      * Callback to handle file upload.
      */
     onFileUpload?: (name: string, content: string) => Promise<void>;
+    /**
+     * Set of favorite playlist IDs.
+     */
+    favoritePlaylistIds?: string[];
+    /**
+     * Callback to toggle a playlist as favorite.
+     */
+    onToggleFavoritePlaylist?: (id: string) => void;
 };
 
 const SettingsSection = React.forwardRef<HTMLDivElement, SettingsSectionProps>(
@@ -52,6 +60,8 @@ const SettingsSection = React.forwardRef<HTMLDivElement, SettingsSectionProps>(
         onPlaybackSettingsUpdate,
         onResetToDefaults,
         onFileUpload,
+        favoritePlaylistIds,
+        onToggleFavoritePlaylist,
         className = "",
         ...rest
     }, ref) => {
@@ -115,6 +125,8 @@ const SettingsSection = React.forwardRef<HTMLDivElement, SettingsSectionProps>(
                                 selectedPlaylistId={selectedPlaylistId}
                                 onPlaylistSelect={onPlaylistSelect}
                                 placeholder="No playlist selected"
+                                favoritePlaylistIds={favoritePlaylistIds}
+                                onToggleFavoritePlaylist={onToggleFavoritePlaylist}
                             />
                         </div>
 
