@@ -46,6 +46,22 @@ export type PlayListSectionProps = React.HTMLAttributes<HTMLDivElement> & {
      * Whether to show group selection first.
      */
     showGroupSelection?: boolean;
+    /**
+     * Set of favorite channel IDs.
+     */
+    favoriteChannelIds?: string[];
+    /**
+     * Callback to toggle a channel as favorite.
+     */
+    onToggleFavoriteChannel?: (id: string) => void;
+    /**
+     * Set of favorite group IDs.
+     */
+    favoriteGroupIds?: string[];
+    /**
+     * Callback to toggle a group as favorite.
+     */
+    onToggleFavoriteGroup?: (id: string) => void;
 };
 
 // Fake channel data for demonstration
@@ -73,6 +89,10 @@ const PlayListSection = React.forwardRef<HTMLDivElement, PlayListSectionProps>(
         selectedGroupId,
         onGroupSelect,
         showGroupSelection = true,
+        favoriteChannelIds = [],
+        onToggleFavoriteChannel,
+        favoriteGroupIds = [],
+        onToggleFavoriteGroup,
         className = "",
         ...rest
     }, ref) => {
@@ -81,7 +101,7 @@ const PlayListSection = React.forwardRef<HTMLDivElement, PlayListSectionProps>(
                 return { "All Channels": channels };
             }
 
-            return channels.reduce((groups, channel) => {
+            const grouped = channels.reduce((groups, channel) => {
                 const category = channel.category || "Uncategorized";
                 if (!groups[category]) {
                     groups[category] = [];
@@ -89,7 +109,15 @@ const PlayListSection = React.forwardRef<HTMLDivElement, PlayListSectionProps>(
                 groups[category].push(channel);
                 return groups;
             }, {} as Record<string, Channel[]>);
-        }, [channels, showCategories]);
+
+            // Put favorite channels in a "Favorites" section at the top
+            const favoriteChannels = channels.filter(c => favoriteChannelIds.includes(c.id));
+            if (favoriteChannels.length > 0) {
+                return { "★ Favorites": favoriteChannels, ...grouped };
+            }
+
+            return grouped;
+        }, [channels, showCategories, favoriteChannelIds]);
 
         const handleChannelClick = (channel: Channel) => {
             onChannelSelect?.(channel);
@@ -97,6 +125,7 @@ const PlayListSection = React.forwardRef<HTMLDivElement, PlayListSectionProps>(
 
         const renderChannel = (channel: Channel) => {
             const isSelected = selectedChannelId === channel.id;
+            const isFavorite = favoriteChannelIds.includes(channel.id);
             const selectedClass = isSelected ? "playlist__channel--selected" : "";
             const liveClass = channel.isLive ? "playlist__channel--live" : "";
 
@@ -131,14 +160,14 @@ const PlayListSection = React.forwardRef<HTMLDivElement, PlayListSectionProps>(
                     }}
                     onMouseOver={(e) => {
                         if (!isSelected) {
-                            (e.target as HTMLElement).style.background = "rgba(255, 255, 255, 0.1)";
-                            (e.target as HTMLElement).style.borderColor = "rgba(255, 255, 255, 0.2)";
+                            (e.currentTarget as HTMLElement).style.background = "rgba(255, 255, 255, 0.1)";
+                            (e.currentTarget as HTMLElement).style.borderColor = "rgba(255, 255, 255, 0.2)";
                         }
                     }}
                     onMouseOut={(e) => {
                         if (!isSelected) {
-                            (e.target as HTMLElement).style.background = "rgba(255, 255, 255, 0.05)";
-                            (e.target as HTMLElement).style.borderColor = "rgba(255, 255, 255, 0.1)";
+                            (e.currentTarget as HTMLElement).style.background = "rgba(255, 255, 255, 0.05)";
+                            (e.currentTarget as HTMLElement).style.borderColor = "rgba(255, 255, 255, 0.1)";
                         }
                     }}
                 >
@@ -152,24 +181,6 @@ const PlayListSection = React.forwardRef<HTMLDivElement, PlayListSectionProps>(
                             minWidth: 0
                         }}
                     >
-                        {/* {channel.logo && (
-                            <div
-                                className="playlist__channel-logo"
-                                style={{
-                                    fontSize: "20px",
-                                    width: "32px",
-                                    height: "32px",
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                    borderRadius: "6px",
-                                    background: "rgba(255, 255, 255, 0.1)",
-                                    border: "1px solid rgba(255, 255, 255, 0.2)"
-                                }}
-                            >
-                                {channel.logo}
-                            </div>
-                        )} */}
                         <div
                             style={{
                                 flex: 1,
@@ -222,6 +233,24 @@ const PlayListSection = React.forwardRef<HTMLDivElement, PlayListSectionProps>(
                                 LIVE
                             </div>
                         )}
+                        {onToggleFavoriteChannel && (
+                            <button
+                                onClick={(e) => { e.stopPropagation(); onToggleFavoriteChannel(channel.id); }}
+                                style={{
+                                    background: 'none',
+                                    border: 'none',
+                                    cursor: 'pointer',
+                                    fontSize: '16px',
+                                    color: isFavorite ? '#fbbf24' : 'rgba(255,255,255,0.3)',
+                                    padding: '0 2px',
+                                    lineHeight: 1,
+                                    flexShrink: 0
+                                }}
+                                aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+                            >
+                                {isFavorite ? '★' : '☆'}
+                            </button>
+                        )}
                     </div>
                 </div>
             );
@@ -265,6 +294,8 @@ const PlayListSection = React.forwardRef<HTMLDivElement, PlayListSectionProps>(
                                 selectedGroupId={selectedGroupId}
                                 onGroupSelect={onGroupSelect}
                                 placeholder="Choose channel group"
+                                favoriteGroupIds={favoriteGroupIds}
+                                onToggleFavoriteGroup={onToggleFavoriteGroup}
                             />
                         </>
                     ) : (

@@ -86,6 +86,30 @@ export type SideBarProps = React.HTMLAttributes<HTMLDivElement> & {
      */
     onFileUpload?: (name: string, content: string) => Promise<void>;
     /**
+     * Set of favorite channel IDs.
+     */
+    favoriteChannelIds?: string[];
+    /**
+     * Callback to toggle a channel as favorite.
+     */
+    onToggleFavoriteChannel?: (id: string) => void;
+    /**
+     * Set of favorite group IDs.
+     */
+    favoriteGroupIds?: string[];
+    /**
+     * Callback to toggle a group as favorite.
+     */
+    onToggleFavoriteGroup?: (id: string) => void;
+    /**
+     * Set of favorite playlist IDs.
+     */
+    favoritePlaylistIds?: string[];
+    /**
+     * Callback to toggle a playlist as favorite.
+     */
+    onToggleFavoritePlaylist?: (id: string) => void;
+    /**
      * Width of the sidebar.
      */
     width?: string;
@@ -119,6 +143,12 @@ const SideBar = React.forwardRef<HTMLDivElement, SideBarProps>(
         onPlaybackSettingsUpdate,
         onResetToDefaults,
         onFileUpload,
+        favoriteChannelIds,
+        onToggleFavoriteChannel,
+        favoriteGroupIds,
+        onToggleFavoriteGroup,
+        favoritePlaylistIds,
+        onToggleFavoritePlaylist,
         width = "320px",
         position = "left",
         showOverlay = true,
@@ -284,6 +314,10 @@ const SideBar = React.forwardRef<HTMLDivElement, SideBarProps>(
                                 selectedGroupId={selectedGroupId}
                                 onGroupSelect={onGroupSelect}
                                 maxHeight="500px"
+                                favoriteChannelIds={favoriteChannelIds}
+                                onToggleFavoriteChannel={onToggleFavoriteChannel}
+                                favoriteGroupIds={favoriteGroupIds}
+                                onToggleFavoriteGroup={onToggleFavoriteGroup}
                             />
                         </div>
 
@@ -306,6 +340,8 @@ const SideBar = React.forwardRef<HTMLDivElement, SideBarProps>(
                                 onPlaybackSettingsUpdate={onPlaybackSettingsUpdate}
                                 onResetToDefaults={onResetToDefaults}
                                 onFileUpload={onFileUpload}
+                                favoritePlaylistIds={favoritePlaylistIds}
+                                onToggleFavoritePlaylist={onToggleFavoritePlaylist}
                             />
                         </div>
                     </div>

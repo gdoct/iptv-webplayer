@@ -27,6 +27,14 @@ export type GroupSelectorProps = React.HTMLAttributes<HTMLDivElement> & {
      * Whether the selector is disabled.
      */
     disabled?: boolean;
+    /**
+     * Set of favorite group IDs.
+     */
+    favoriteGroupIds?: string[];
+    /**
+     * Callback to toggle a group as favorite.
+     */
+    onToggleFavoriteGroup?: (id: string) => void;
 };
 
 const GroupSelector = React.forwardRef<HTMLDivElement, GroupSelectorProps>(
@@ -36,12 +44,20 @@ const GroupSelector = React.forwardRef<HTMLDivElement, GroupSelectorProps>(
         onGroupSelect,
         placeholder = "Select a group",
         disabled = false,
+        favoriteGroupIds = [],
+        onToggleFavoriteGroup,
         className = "",
         ...rest
     }, ref) => {
         const [isOpen, setIsOpen] = useState(false);
 
         const selectedGroup = groups.find(g => g.id === selectedGroupId);
+
+        const sortedGroups = React.useMemo(() => {
+            const favs = groups.filter(g => favoriteGroupIds.includes(g.id));
+            const rest = groups.filter(g => !favoriteGroupIds.includes(g.id));
+            return [...favs, ...rest];
+        }, [groups, favoriteGroupIds]);
 
         const handleToggle = () => {
             if (!disabled) {
@@ -122,9 +138,15 @@ const GroupSelector = React.forwardRef<HTMLDivElement, GroupSelectorProps>(
                                         fontSize: '14px',
                                         fontWeight: '600',
                                         color: '#ffffff',
-                                        marginBottom: '2px'
+                                        marginBottom: '2px',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '6px'
                                     }}
                                 >
+                                    {favoriteGroupIds.includes(selectedGroup.id) && (
+                                        <span style={{ color: '#fbbf24', fontSize: '12px' }}>★</span>
+                                    )}
                                     {selectedGroup.name}
                                 </div>
                                 <div
@@ -182,7 +204,7 @@ const GroupSelector = React.forwardRef<HTMLDivElement, GroupSelectorProps>(
                             overflowY: 'auto'
                         }}
                     >
-                        {groups.length === 0 ? (
+                        {sortedGroups.length === 0 ? (
                             < div
                                 className="group-selector__empty"
                                 style={{
@@ -195,54 +217,88 @@ const GroupSelector = React.forwardRef<HTMLDivElement, GroupSelectorProps>(
                                 No groups available
                             </div >
                         ) : (
-                            groups.map((group) => {
+                            sortedGroups.map((group, index) => {
                                 const isSelected = selectedGroupId === group.id;
+                                const isFavorite = favoriteGroupIds.includes(group.id);
+                                const prevIsFavorite = index > 0 && favoriteGroupIds.includes(sortedGroups[index - 1].id);
+                                const showDivider = index > 0 && !isFavorite && prevIsFavorite;
                                 return (
-                                    < div
-                                        key={group.id}
-                                        className={`group-selector__option ${isSelected ? 'group-selector__option--selected' : ''}`.trim()}
-                                        onClick={() => handleGroupSelect(group)}
-                                        style={{
-                                            padding: '12px 16px',
-                                            cursor: 'pointer',
-                                            transition: 'background-color 0.2s',
-                                            borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
-                                            background: isSelected
-                                                ? 'rgba(59, 130, 246, 0.2)'
-                                                : 'transparent'
-                                        }}
-                                        onMouseOver={(e) => {
-                                            if (!isSelected) {
-                                                (e.target as HTMLElement).style.backgroundColor = 'rgba(255, 255, 255, 0.05)';
-                                            }
-                                        }}
-                                        onMouseOut={(e) => {
-                                            if (!isSelected) {
-                                                (e.target as HTMLElement).style.backgroundColor = 'transparent';
-                                            }
-                                        }}
-                                    >
-                                        < div
-                                            className="group-selector__option-name"
+                                    <React.Fragment key={group.id}>
+                                        {showDivider && (
+                                            <div style={{
+                                                height: '1px',
+                                                background: 'rgba(255, 255, 255, 0.15)',
+                                                margin: '4px 0'
+                                            }} />
+                                        )}
+                                        <div
+                                            className={`group-selector__option ${isSelected ? 'group-selector__option--selected' : ''}`.trim()}
+                                            onClick={() => handleGroupSelect(group)}
                                             style={{
-                                                fontSize: '14px',
-                                                fontWeight: '600',
-                                                color: '#ffffff',
-                                                marginBottom: '2px'
+                                                padding: '12px 16px',
+                                                cursor: 'pointer',
+                                                transition: 'background-color 0.2s',
+                                                borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
+                                                background: isSelected
+                                                    ? 'rgba(59, 130, 246, 0.2)'
+                                                    : 'transparent',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                gap: '8px'
+                                            }}
+                                            onMouseOver={(e) => {
+                                                if (!isSelected) {
+                                                    (e.currentTarget as HTMLElement).style.backgroundColor = 'rgba(255, 255, 255, 0.05)';
+                                                }
+                                            }}
+                                            onMouseOut={(e) => {
+                                                if (!isSelected) {
+                                                    (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent';
+                                                }
                                             }}
                                         >
-                                            {group.name}
-                                        </div >
-                                        < div
-                                            className="group-selector__option-count"
-                                            style={{
-                                                fontSize: '12px',
-                                                color: 'rgba(255, 255, 255, 0.7)'
-                                            }}
-                                        >
-                                            {group.channelCount} channels
-                                        </div >
-                                    </div >
+                                            <div style={{ flex: 1 }}>
+                                                <div
+                                                    className="group-selector__option-name"
+                                                    style={{
+                                                        fontSize: '14px',
+                                                        fontWeight: '600',
+                                                        color: '#ffffff',
+                                                        marginBottom: '2px'
+                                                    }}
+                                                >
+                                                    {group.name}
+                                                </div>
+                                                <div
+                                                    className="group-selector__option-count"
+                                                    style={{
+                                                        fontSize: '12px',
+                                                        color: 'rgba(255, 255, 255, 0.7)'
+                                                    }}
+                                                >
+                                                    {group.channelCount} channels
+                                                </div>
+                                            </div>
+                                            {onToggleFavoriteGroup && (
+                                                <button
+                                                    onClick={(e) => { e.stopPropagation(); onToggleFavoriteGroup(group.id); }}
+                                                    style={{
+                                                        background: 'none',
+                                                        border: 'none',
+                                                        cursor: 'pointer',
+                                                        fontSize: '16px',
+                                                        color: isFavorite ? '#fbbf24' : 'rgba(255,255,255,0.3)',
+                                                        padding: '0 2px',
+                                                        lineHeight: 1,
+                                                        flexShrink: 0
+                                                    }}
+                                                    aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+                                                >
+                                                    {isFavorite ? '★' : '☆'}
+                                                </button>
+                                            )}
+                                        </div>
+                                    </React.Fragment>
                                 );
                             })
                         )}

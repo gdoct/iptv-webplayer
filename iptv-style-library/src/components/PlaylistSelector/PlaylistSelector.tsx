@@ -30,6 +30,14 @@ export type PlaylistSelectorProps = React.HTMLAttributes<HTMLDivElement> & {
      * Placeholder text when no playlist is selected.
      */
     placeholder?: string;
+    /**
+     * Set of favorite playlist IDs.
+     */
+    favoritePlaylistIds?: string[];
+    /**
+     * Callback to toggle a playlist as favorite.
+     */
+    onToggleFavoritePlaylist?: (id: string) => void;
 };
 
 // Fake playlist data for demonstration
@@ -75,12 +83,20 @@ const PlaylistSelector = React.forwardRef<HTMLDivElement, PlaylistSelectorProps>
         onPlaylistSelect,
         disabled = false,
         placeholder = "Select a playlist...",
+        favoritePlaylistIds = [],
+        onToggleFavoritePlaylist,
         className = "",
         ...rest
     }, ref) => {
         const [isOpen, setIsOpen] = useState(false);
 
         const selectedPlaylist = playlists.find(p => p.id === selectedPlaylistId);
+
+        const sortedPlaylists = React.useMemo(() => {
+            const favs = playlists.filter(p => favoritePlaylistIds.includes(p.id));
+            const rest = playlists.filter(p => !favoritePlaylistIds.includes(p.id));
+            return [...favs, ...rest];
+        }, [playlists, favoritePlaylistIds]);
 
         const handleToggle = () => {
             if (!disabled) {
@@ -134,7 +150,10 @@ const PlaylistSelector = React.forwardRef<HTMLDivElement, PlaylistSelectorProps>
                     <div className="playlist-selector__content">
                         {selectedPlaylist ? (
                             <>
-                                <div className="playlist-selector__name">
+                                <div className="playlist-selector__name" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                    {favoritePlaylistIds.includes(selectedPlaylist.id) && (
+                                        <span style={{ color: '#fbbf24', fontSize: '12px' }}>★</span>
+                                    )}
                                     {selectedPlaylist.name}
                                 </div>
                                 <div className="playlist-selector__info">
@@ -155,42 +174,72 @@ const PlaylistSelector = React.forwardRef<HTMLDivElement, PlaylistSelectorProps>
 
                 {isOpen && (
                     <div className="playlist-selector__dropdown" role="listbox">
-                        {playlists.map((playlist) => {
+                        {sortedPlaylists.map((playlist, index) => {
                             const isSelected = selectedPlaylistId === playlist.id;
+                            const isFavorite = favoritePlaylistIds.includes(playlist.id);
                             const selectedClass = isSelected ? "playlist-selector__option--selected" : "";
                             const inactiveClass = !playlist.isActive ? "playlist-selector__option--inactive" : "";
+                            const prevIsFavorite = index > 0 && favoritePlaylistIds.includes(sortedPlaylists[index - 1].id);
+                            const showDivider = index > 0 && !isFavorite && prevIsFavorite;
 
                             return (
-                                <div
-                                    key={playlist.id}
-                                    className={`playlist-selector__option ${selectedClass} ${inactiveClass}`.trim()}
-                                    onClick={() => handlePlaylistClick(playlist)}
-                                    role="option"
-                                    aria-selected={isSelected}
-                                    tabIndex={0}
-                                    onKeyDown={(e) => {
-                                        if (e.key === 'Enter' || e.key === ' ') {
-                                            e.preventDefault();
-                                            handlePlaylistClick(playlist);
-                                        }
-                                    }}
-                                >
-                                    <div className="playlist-selector__option-content">
-                                        <div className="playlist-selector__option-name">
-                                            {playlist.name}
-                                            {!playlist.isActive && (
-                                                <span className="playlist-selector__option-badge">Inactive</span>
-                                            )}
-                                        </div>
-                                        <div className="playlist-selector__option-info">
-                                            {playlist.channelCount} channels • Updated{' '}
-                                            {playlist.lastUpdated?.toLocaleDateString()}
-                                        </div>
-                                    </div>
-                                    {isSelected && (
-                                        <div className="playlist-selector__check">✓</div>
+                                <React.Fragment key={playlist.id}>
+                                    {showDivider && (
+                                        <div style={{
+                                            height: '1px',
+                                            background: 'rgba(255, 255, 255, 0.15)',
+                                            margin: '4px 0'
+                                        }} />
                                     )}
-                                </div>
+                                    <div
+                                        className={`playlist-selector__option ${selectedClass} ${inactiveClass}`.trim()}
+                                        onClick={() => handlePlaylistClick(playlist)}
+                                        role="option"
+                                        aria-selected={isSelected}
+                                        tabIndex={0}
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter' || e.key === ' ') {
+                                                e.preventDefault();
+                                                handlePlaylistClick(playlist);
+                                            }
+                                        }}
+                                        style={{ display: 'flex', alignItems: 'center' }}
+                                    >
+                                        <div className="playlist-selector__option-content" style={{ flex: 1 }}>
+                                            <div className="playlist-selector__option-name">
+                                                {playlist.name}
+                                                {!playlist.isActive && (
+                                                    <span className="playlist-selector__option-badge">Inactive</span>
+                                                )}
+                                            </div>
+                                            <div className="playlist-selector__option-info">
+                                                {playlist.channelCount} channels • Updated{' '}
+                                                {playlist.lastUpdated?.toLocaleDateString()}
+                                            </div>
+                                        </div>
+                                        {onToggleFavoritePlaylist && (
+                                            <button
+                                                onClick={(e) => { e.stopPropagation(); onToggleFavoritePlaylist(playlist.id); }}
+                                                style={{
+                                                    background: 'none',
+                                                    border: 'none',
+                                                    cursor: 'pointer',
+                                                    fontSize: '16px',
+                                                    color: isFavorite ? '#fbbf24' : 'rgba(255,255,255,0.3)',
+                                                    padding: '0 4px',
+                                                    lineHeight: 1,
+                                                    flexShrink: 0
+                                                }}
+                                                aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+                                            >
+                                                {isFavorite ? '★' : '☆'}
+                                            </button>
+                                        )}
+                                        {isSelected && (
+                                            <div className="playlist-selector__check">✓</div>
+                                        )}
+                                    </div>
+                                </React.Fragment>
                             );
                         })}
                     </div>
