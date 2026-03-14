@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
 const FAVORITES_KEY = 'iptv-favorites';
 
@@ -8,10 +8,29 @@ interface FavoritesData {
   playlists: string[];
 }
 
+function isStringArray(value: unknown): value is string[] {
+  return Array.isArray(value) && value.every(item => typeof item === 'string');
+}
+function normalizeFavorites(value: unknown): FavoritesData {
+  if (typeof value !== 'object' || value === null) {
+    return { channels: [], groups: [], playlists: [] };
+  }
+  const obj = value as Partial<FavoritesData>;
+  return {
+    channels: isStringArray(obj.channels) ? obj.channels : [],
+    groups: isStringArray(obj.groups) ? obj.groups : [],
+    playlists: isStringArray(obj.playlists) ? obj.playlists : [],
+  };
+}
+
 function loadFavorites(): FavoritesData {
   try {
     const stored = localStorage.getItem(FAVORITES_KEY);
-    return stored ? JSON.parse(stored) : { channels: [], groups: [], playlists: [] };
+    if (!stored) {
+      return { channels: [], groups: [], playlists: [] };
+    }
+    const parsed = JSON.parse(stored);
+    return normalizeFavorites(parsed);
   } catch {
     return { channels: [], groups: [], playlists: [] };
   }
@@ -20,31 +39,50 @@ function loadFavorites(): FavoritesData {
 export function useFavorites() {
   const [favorites, setFavorites] = useState<FavoritesData>(loadFavorites);
 
-  const save = (newFavs: FavoritesData) => {
-    setFavorites(newFavs);
-    localStorage.setItem(FAVORITES_KEY, JSON.stringify(newFavs));
-  };
+  const toggleFavoriteChannel = useCallback((id: string) => {
+    setFavorites(prev => {
+      const channels = prev.channels.includes(id)
+        ? prev.channels.filter(c => c !== id)
+        : [...prev.channels, id];
+      const next = { ...prev, channels };
+      try {
+        localStorage.setItem(FAVORITES_KEY, JSON.stringify(next));
+      } catch (error) {
+        console.error('Failed to save favorites to localStorage', error);
+      }
+      return next;
+    });
+  }, []);
 
-  const toggleFavoriteChannel = (id: string) => {
-    const channels = favorites.channels.includes(id)
-      ? favorites.channels.filter(c => c !== id)
-      : [...favorites.channels, id];
-    save({ ...favorites, channels });
-  };
+  const toggleFavoriteGroup = useCallback((id: string) => {
+    setFavorites(prev => {
+      const groups = prev.groups.includes(id)
+        ? prev.groups.filter(g => g !== id)
+        : [...prev.groups, id];
+      const next = { ...prev, groups };
+      try {
+        localStorage.setItem(FAVORITES_KEY, JSON.stringify(next));
+      } catch (error) {
+        console.error('Failed to save favorites to localStorage', error);
+      }
+      return next;
+    });
+  }, []);
 
-  const toggleFavoriteGroup = (id: string) => {
-    const groups = favorites.groups.includes(id)
-      ? favorites.groups.filter(g => g !== id)
-      : [...favorites.groups, id];
-    save({ ...favorites, groups });
-  };
-
-  const toggleFavoritePlaylist = (id: string) => {
-    const playlists = favorites.playlists.includes(id)
-      ? favorites.playlists.filter(p => p !== id)
-      : [...favorites.playlists, id];
-    save({ ...favorites, playlists });
-  };
+  const toggleFavoritePlaylist = useCallback((id: string) => {
+    setFavorites(prev => {
+      const playlists = prev.playlists.includes(id)
+        ? prev.playlists.filter(p => p !== id)
+        : [...prev.playlists, id];
+      const next = { ...prev, playlists };
+      try {
+        localStorage.setItem(FAVORITES_KEY, JSON.stringify(next));
+      } catch (error) {
+        console.error('Failed to save favorites to localStorage', error);
+      }
+      return next;
+    });
+  }, []);
 
   return {
     favoriteChannelIds: favorites.channels,
